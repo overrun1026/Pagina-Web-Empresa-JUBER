@@ -1,3 +1,4 @@
+
 // =====================================================
 // NAVBAR AL HACER SCROLL
 // =====================================================
@@ -414,35 +415,65 @@ if (contactForm) {
 
             try {
 
-                // Crear FormData con los datos
-                // que ya existen en el formulario
+                // Crear FormData con todos los campos
+                // del formulario
 
                 const formData =
                     new FormData(contactForm);
 
 
-                // Agregar la Access Key de Web3Forms
+                // Convertir FormData a objeto
 
-                formData.append(
-                    "access_key",
-                    accessKey
-                );
+                const data =
+                    Object.fromEntries(
+                        formData.entries()
+                    );
 
 
-                // Enviar formulario
+                // Agregar Access Key
+
+                data.access_key =
+                    accessKey;
+
+
+                // =================================================
+                // ENVIAR A WEB3FORMS
+                // =================================================
 
                 const response =
                     await fetch(
                         "https://api.web3forms.com/submit",
                         {
+
                             method: "POST",
-                            body: formData
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
                         }
                     );
 
 
+                // Obtener respuesta
+
                 const result =
                     await response.json();
+
+
+                console.log(
+                    "Respuesta Web3Forms:",
+                    result
+                );
 
 
                 // =================================================
@@ -450,6 +481,7 @@ if (contactForm) {
                 // =================================================
 
                 if (
+                    response.ok &&
                     result.success === true
                 ) {
 
@@ -491,7 +523,7 @@ if (contactForm) {
 
                     throw new Error(
                         result.message ||
-                        "No se pudo enviar el formulario."
+                        "Web3Forms rechazó el envío."
                     );
 
                 }
@@ -541,3 +573,17 @@ if (contactForm) {
     );
 
 }
+```
+
+Con este cambio, el flujo queda:
+
+**Formulario → FormData → JSON → Web3Forms → respuesta → mensaje de éxito/error.**
+
+Además, dejé:
+
+```javascript
+console.log(
+    "Respuesta Web3Forms:",
+    result
+);
+
