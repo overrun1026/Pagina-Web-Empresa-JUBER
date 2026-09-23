@@ -175,7 +175,9 @@ if (counters.length > 0) {
 }
 
 
+// =====================================================
 // FUNCIÓN DE CONTADOR
+// =====================================================
 
 function animateCounter(counter) {
 
@@ -358,7 +360,7 @@ if (scrollTopButton) {
 
 
 // =====================================================
-// FORMULARIO
+// FORMULARIO DE CONTACTO - WEB3FORMS
 // =====================================================
 
 const contactForm =
@@ -369,46 +371,87 @@ const contactForm =
 
 if (contactForm) {
 
-    contactForm
-        .addEventListener(
-            "submit",
-            (event) => {
+    contactForm.addEventListener(
+        "submit",
+        async (event) => {
 
-                event.preventDefault();
+            event.preventDefault();
 
 
-                const button =
-                    contactForm.querySelector(
-                        "button[type='submit']"
+            const button =
+                contactForm.querySelector(
+                    "button[type='submit']"
+                );
+
+
+            if (!button) return;
+
+
+            const originalText =
+                button.innerHTML;
+
+
+            // =================================================
+            // CONFIGURACIÓN WEB3FORMS
+            // =================================================
+
+            const accessKey =
+                "68bbf3a3-aad0-4bbc-85f4-e0530c800bf8";
+
+
+            // =================================================
+            // ESTADO DE ENVÍO
+            // =================================================
+
+            button.disabled = true;
+
+            button.innerHTML =
+                `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Enviando solicitud...
+                `;
+
+
+            try {
+
+                // Crear FormData con los datos
+                // que ya existen en el formulario
+
+                const formData =
+                    new FormData(contactForm);
+
+
+                // Agregar la Access Key de Web3Forms
+
+                formData.append(
+                    "access_key",
+                    accessKey
+                );
+
+
+                // Enviar formulario
+
+                const response =
+                    await fetch(
+                        "https://api.web3forms.com/submit",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
                     );
 
 
-                if (!button) return;
+                const result =
+                    await response.json();
 
 
-                const originalText =
-                    button.innerHTML;
+                // =================================================
+                // ENVÍO EXITOSO
+                // =================================================
 
-
-                // Estado de envío
-
-                button.disabled = true;
-
-
-                button.innerHTML =
-                    `
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Enviando solicitud...
-                    `;
-
-
-                // Simulación de envío
-                // Cuando conectemos EmailJS
-                // aquí se reemplazará esta parte
-
-
-                setTimeout(() => {
-
+                if (
+                    result.success === true
+                ) {
 
                     button.innerHTML =
                         `
@@ -426,6 +469,8 @@ if (contactForm) {
                     contactForm.reset();
 
 
+                    // Restaurar botón después de unos segundos
+
                     setTimeout(() => {
 
                         button.innerHTML =
@@ -442,9 +487,57 @@ if (contactForm) {
                     }, 2500);
 
 
-                }, 1000);
+                } else {
+
+                    throw new Error(
+                        result.message ||
+                        "No se pudo enviar el formulario."
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error al enviar el formulario:",
+                    error
+                );
+
+
+                // =================================================
+                // ERROR
+                // =================================================
+
+                button.innerHTML =
+                    `
+                    <i class="fa-solid fa-xmark"></i>
+                    Error al enviar
+                    `;
+
+
+                button.style.background =
+                    "#dc2626";
+
+
+                setTimeout(() => {
+
+                    button.innerHTML =
+                        originalText;
+
+
+                    button.style.background =
+                        "";
+
+
+                    button.disabled =
+                        false;
+
+                }, 3000);
 
             }
-        );
+
+        }
+    );
 
 }
