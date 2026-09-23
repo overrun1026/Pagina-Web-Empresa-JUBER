@@ -1,4 +1,3 @@
-
 // =====================================================
 // NAVBAR AL HACER SCROLL
 // =====================================================
@@ -6,19 +5,13 @@
 const header = document.querySelector(".header");
 
 window.addEventListener("scroll", () => {
-
     if (!header) return;
 
     if (window.scrollY > 50) {
-
         header.classList.add("scrolled");
-
     } else {
-
         header.classList.remove("scrolled");
-
     }
-
 });
 
 
@@ -26,12 +19,8 @@ window.addEventListener("scroll", () => {
 // MENÚ RESPONSIVE
 // =====================================================
 
-const menuToggle =
-    document.querySelector(".menu-toggle");
-
-const navLinks =
-    document.querySelector(".nav-links");
-
+const menuToggle = document.querySelector(".menu-toggle");
+const navLinks = document.querySelector(".nav-links");
 
 if (menuToggle && navLinks) {
 
@@ -39,7 +28,6 @@ if (menuToggle && navLinks) {
 
         navLinks.classList.toggle("active");
 
-        // Evita hacer scroll en el fondo
         document.body.classList.toggle(
             "menu-open",
             navLinks.classList.contains("active")
@@ -73,50 +61,41 @@ if (menuToggle && navLinks) {
 // ANIMACIONES AL HACER SCROLL
 // =====================================================
 
-const revealElements =
-    document.querySelectorAll(
-        ".reveal, .reveal-left"
+const revealElements = document.querySelectorAll(
+    ".reveal, .reveal-left"
+);
+
+if (
+    revealElements.length > 0 &&
+    "IntersectionObserver" in window
+) {
+
+    const revealObserver = new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add("active");
+
+                    revealObserver.unobserve(
+                        entry.target
+                    );
+
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.15
+        }
     );
 
 
-if (revealElements.length > 0) {
-
-    const revealObserver =
-        new IntersectionObserver(
-            (entries) => {
-
-                entries.forEach(entry => {
-
-                    if (entry.isIntersecting) {
-
-                        entry.target
-                            .classList
-                            .add("active");
-
-                        // Dejar de observar después
-                        // de mostrar la animación
-
-                        revealObserver.unobserve(
-                            entry.target
-                        );
-
-                    }
-
-                });
-
-            },
-
-            {
-                threshold: 0.15
-            }
-
-        );
-
-
     revealElements.forEach(element => {
-
         revealObserver.observe(element);
-
     });
 
 }
@@ -126,51 +105,44 @@ if (revealElements.length > 0) {
 // CONTADORES ANIMADOS
 // =====================================================
 
-const counters =
-    document.querySelectorAll(".counter");
+const counters = document.querySelectorAll(".counter");
 
+if (
+    counters.length > 0 &&
+    "IntersectionObserver" in window
+) {
 
-if (counters.length > 0) {
+    const counterObserver = new IntersectionObserver(
+        (entries) => {
 
-    const counterObserver =
-        new IntersectionObserver(
-            (entries) => {
+            entries.forEach(entry => {
 
-                entries.forEach(entry => {
+                if (
+                    entry.isIntersecting &&
+                    !entry.target.dataset.animated
+                ) {
 
-                    if (
-                        entry.isIntersecting &&
-                        !entry.target.dataset.animated
-                    ) {
+                    entry.target.dataset.animated = "true";
 
-                        entry.target.dataset.animated =
-                            "true";
+                    animateCounter(entry.target);
 
-                        animateCounter(
-                            entry.target
-                        );
+                    counterObserver.unobserve(
+                        entry.target
+                    );
 
-                        counterObserver.unobserve(
-                            entry.target
-                        );
+                }
 
-                    }
+            });
 
-                });
-
-            },
-
-            {
-                threshold: 0.5
-            }
-
-        );
+        },
+        {
+            threshold: 0.5
+        }
+    );
 
 
     counters.forEach(counter => {
-
         counterObserver.observe(counter);
-
     });
 
 }
@@ -182,15 +154,13 @@ if (counters.length > 0) {
 
 function animateCounter(counter) {
 
-    const target =
-        Number(
-            counter.dataset.target
-        );
+    const target = Number(
+        counter.dataset.target
+    );
 
     const duration = 1500;
 
-    const startTime =
-        performance.now();
+    const startTime = performance.now();
 
 
     function updateCounter(currentTime) {
@@ -204,8 +174,6 @@ function animateCounter(counter) {
                 1
             );
 
-
-        // Animación más suave
 
         const easeOut =
             1 -
@@ -252,19 +220,15 @@ function animateCounter(counter) {
 // FAQ - PREGUNTAS FRECUENTES
 // =====================================================
 
-const faqItems =
-    document.querySelectorAll(
-        ".faq-item"
-    );
-
+const faqItems = document.querySelectorAll(
+    ".faq-item"
+);
 
 faqItems.forEach(item => {
 
-    const question =
-        item.querySelector(
-            ".faq-question"
-        );
-
+    const question = item.querySelector(
+        ".faq-question"
+    );
 
     if (!question) return;
 
@@ -283,21 +247,20 @@ faqItems.forEach(item => {
 
             faqItems.forEach(otherItem => {
 
-                otherItem
-                    .classList
-                    .remove("active");
+                otherItem.classList.remove(
+                    "active"
+                );
 
             });
 
 
-            // Si no estaba abierta,
-            // abrir la seleccionada
+            // Abrir la seleccionada
 
             if (!isActive) {
 
-                item
-                    .classList
-                    .add("active");
+                item.classList.add(
+                    "active"
+                );
 
             }
 
@@ -316,7 +279,6 @@ const scrollTopButton =
         ".scroll-top"
     );
 
-
 if (scrollTopButton) {
 
     window.addEventListener(
@@ -325,15 +287,15 @@ if (scrollTopButton) {
 
             if (window.scrollY > 500) {
 
-                scrollTopButton
-                    .classList
-                    .add("show");
+                scrollTopButton.classList.add(
+                    "show"
+                );
 
             } else {
 
-                scrollTopButton
-                    .classList
-                    .remove("show");
+                scrollTopButton.classList.remove(
+                    "show"
+                );
 
             }
 
@@ -341,21 +303,17 @@ if (scrollTopButton) {
     );
 
 
-    scrollTopButton
-        .addEventListener(
-            "click",
-            () => {
+    scrollTopButton.addEventListener(
+        "click",
+        () => {
 
-                window.scrollTo({
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
 
-                    top: 0,
-
-                    behavior: "smooth"
-
-                });
-
-            }
-        );
+        }
+    );
 
 }
 
@@ -368,7 +326,6 @@ const contactForm =
     document.querySelector(
         ".contact-form"
     );
-
 
 if (contactForm) {
 
@@ -406,20 +363,20 @@ if (contactForm) {
 
             button.disabled = true;
 
-            button.innerHTML =
-                `
+            button.innerHTML = `
                 <i class="fa-solid fa-spinner fa-spin"></i>
                 Enviando solicitud...
-                `;
+            `;
 
 
             try {
 
-                // Crear FormData con todos los campos
-                // del formulario
+                // Crear FormData
 
                 const formData =
-                    new FormData(contactForm);
+                    new FormData(
+                        contactForm
+                    );
 
 
                 // Convertir FormData a objeto
@@ -444,22 +401,20 @@ if (contactForm) {
                     await fetch(
                         "https://api.web3forms.com/submit",
                         {
-
                             method: "POST",
 
                             headers: {
-
                                 "Content-Type":
                                     "application/json",
 
                                 "Accept":
                                     "application/json"
-
                             },
 
                             body:
-                                JSON.stringify(data)
-
+                                JSON.stringify(
+                                    data
+                                )
                         }
                     );
 
@@ -485,11 +440,10 @@ if (contactForm) {
                     result.success === true
                 ) {
 
-                    button.innerHTML =
-                        `
+                    button.innerHTML = `
                         <i class="fa-solid fa-check"></i>
                         Solicitud enviada
-                        `;
+                    `;
 
 
                     button.style.background =
@@ -501,17 +455,15 @@ if (contactForm) {
                     contactForm.reset();
 
 
-                    // Restaurar botón después de unos segundos
+                    // Restaurar botón
 
                     setTimeout(() => {
 
                         button.innerHTML =
                             originalText;
 
-
                         button.style.background =
                             "";
-
 
                         button.disabled =
                             false;
@@ -541,11 +493,10 @@ if (contactForm) {
                 // ERROR
                 // =================================================
 
-                button.innerHTML =
-                    `
+                button.innerHTML = `
                     <i class="fa-solid fa-xmark"></i>
                     Error al enviar
-                    `;
+                `;
 
 
                 button.style.background =
@@ -557,10 +508,8 @@ if (contactForm) {
                     button.innerHTML =
                         originalText;
 
-
                     button.style.background =
                         "";
-
 
                     button.disabled =
                         false;
@@ -573,17 +522,3 @@ if (contactForm) {
     );
 
 }
-```
-
-Con este cambio, el flujo queda:
-
-**Formulario → FormData → JSON → Web3Forms → respuesta → mensaje de éxito/error.**
-
-Además, dejé:
-
-```javascript
-console.log(
-    "Respuesta Web3Forms:",
-    result
-);
-
